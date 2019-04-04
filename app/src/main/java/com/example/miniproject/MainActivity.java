@@ -118,15 +118,6 @@ public class MainActivity extends AppCompatActivity
                     public void onComplete(@NonNull Task<Location> task) {
                         if (task.isSuccessful() && task.getResult() != null) {
                             mLastLocation = task.getResult();
-/*
-                            mLatitudeMsg.setText(String.format(Locale.ENGLISH, "%s: %f",
-                                    getResources().getString(R.string.latitude_label),
-                                    mLastLocation.getLatitude()));
-
-                            mLongitudeMsg.setText(String.format(Locale.ENGLISH, "%s: %f",
-                                    getResources().getString(R.string.longitude_label),
-                                    mLastLocation.getLongitude()));
-*/
 
                             myLat = String.valueOf(mLastLocation.getLatitude());
                             myLng = String.valueOf(mLastLocation.getLongitude());
