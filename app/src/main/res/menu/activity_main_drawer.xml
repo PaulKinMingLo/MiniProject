@@ -7,11 +7,15 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Home" />
+            android:title="@string/drawer_menu_item_home" />
         <item
             android:id="@+id/nav_setting"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Setting" />
+            android:title="@string/drawer_menu_item_setting" />
+        <item
+            android:id="@+id/nav_info"
+            android:icon="@android:drawable/ic_menu_info_details"
+            android:title="@string/drawer_menu_item_info" />
     </group>
 
 </menu>

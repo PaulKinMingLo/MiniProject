@@ -1,7 +1,6 @@
 package com.example.miniproject;
 
 import android.Manifest;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -9,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -32,6 +30,7 @@ import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -39,13 +38,16 @@ public class MainActivity extends AppCompatActivity
     public static final String EXTRA_MESSAGE = "com.example.assignment.MESSAGE";
 
     private String TAG = MainActivity.class.getSimpleName();
-    private ProgressDialog pDialog;
     private ListView lv;
 
     private String url = "";
     private String myLat = "";
     private String myLng = "";
     private String tempUrl = "";
+
+    private TextView toiletName;
+    private TextView toiletAddr;
+    private TextView toiletDis;
 
     ArrayList<HashMap<String, String>> toiletList;
 
@@ -55,22 +57,27 @@ public class MainActivity extends AppCompatActivity
 
     protected Location mLastLocation;
 
-    private String mLatitudeLabel;
-    private String mLongitudeLabel;
-    private TextView mLatitudeMsg;
-    private TextView mLongitudeMsg;
+    private String currentLanguage;
+    private String currentCountry;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mLatitudeLabel = getResources().getString(R.string.latitude_label);
-        mLongitudeLabel = getResources().getString(R.string.longitude_label);
-        mLatitudeMsg = findViewById(R.id.setting_lat_msg);
-        mLongitudeMsg = findViewById(R.id.setting_lng_msg);
+        //TODO change font size
+        //toiletName = (TextView) findViewById(R.id.name);
+        //toiletAddr = findViewById(R.id.address);
+        //toiletDis = findViewById(R.id.distance);
+
+        //toiletName.setTextSize(20);
+        //toiletAddr.setTextSize(getResources().getDimensionPixelSize(R.dimen.list_item_address_default));
+        //toiletDis.setTextSize(getResources().getDimensionPixelSize(R.dimen.list_item_distance_default));
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        currentLanguage = Locale.getDefault().getLanguage();
+        currentCountry = Locale.getDefault().getCountry();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -95,7 +102,6 @@ public class MainActivity extends AppCompatActivity
         if (!checkPermissions()) {
             requestPermissions();
         } else {
-            //Toast.makeText(getApplicationContext(), "Getting result...", Toast.LENGTH_SHORT).show();
             getResult();
         }
     }
@@ -128,13 +134,24 @@ public class MainActivity extends AppCompatActivity
                             tempUrl = tempUrl.concat(myLng);
 
                             url = url.concat(getResources().getString(R.string.linkToServer));
+
+                            Log.i(TAG, "The default language is " + currentCountry + " " + currentLanguage);
+
+                            if (currentLanguage == "ch") {
+                                tempUrl = tempUrl.concat("&lang=");
+                                //TODO localization the app
+                            }
+
                             url = url.concat(tempUrl);
-                            //Toast.makeText(getApplicationContext(), url, Toast.LENGTH_SHORT).show();
-                            Log.e(TAG, url);
+
+                            Log.i(TAG, url);
                             toiletList = new ArrayList<>();
                             lv = (ListView) findViewById(R.id.list);
-                            //new GetToilet().execute();
-                            new ToiletListTask(MainActivity.this, lv).execute(url);
+
+                            ToiletListTask getToiletList = new ToiletListTask(MainActivity.this, lv);
+                            getToiletList.setDistanceLabel(getResources().getString(R.string.distance_label));
+                            getToiletList.setDistanceUnitLabel(getResources().getString(R.string.distanceUnit_label));
+                            getToiletList.execute(url);
 
                         } else {
                             Log.w(TAG, "getLastLocation:exception", task.getException());
@@ -233,9 +250,7 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_retry) {
-            //Toast.makeText(this, "Retry button pressed", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, MainActivity.class);
             //String message = myLat;
             //intent.putExtra(EXTRA_MESSAGE, message);
@@ -258,13 +273,24 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        String extraMessageKey1 = "latitude";
+        String extraMessageKey2 = "longitude";
+
         switch (id) {
             case R.id.nav_home:
                 break;
             case R.id.nav_setting:
                 Intent intent2 = new Intent(getApplicationContext(), SettingActivity.class);
+                if (myLat != null) {
+                    intent2.putExtra(extraMessageKey1, myLat);
+                }
+                if (myLng != null) {
+                    intent2.putExtra(extraMessageKey2, myLng);
+                }
                 startActivity(intent2);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                break;
+            case R.id.nav_info:
                 break;
         }
 

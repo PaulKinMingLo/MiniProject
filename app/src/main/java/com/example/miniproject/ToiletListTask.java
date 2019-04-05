@@ -1,28 +1,17 @@
 package com.example.miniproject;
 
-import android.Manifest;
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.AsyncTask;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
-import android.widget.Toast;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,14 +22,11 @@ public class ToiletListTask extends AsyncTask<String, Void, ArrayList<HashMap<St
     private Context context;
     private ProgressDialog pDialog;
     private ListView lv;
-    private Location mLastLocation;
 
     private String distanceLabel = null;
     private String distanceUnitLabel = null;
 
-    private ArrayList<HashMap<String, String>> toiletList;
-
-    private FusedLocationProviderClient mFusedLocationClient;
+    ArrayList<HashMap<String, String>> toiletList = new ArrayList<>();
 
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
 
@@ -49,7 +35,6 @@ public class ToiletListTask extends AsyncTask<String, Void, ArrayList<HashMap<St
         pDialog = new ProgressDialog(context);
 
         lv = listView;
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context);
     }
 
     @Override
@@ -57,6 +42,7 @@ public class ToiletListTask extends AsyncTask<String, Void, ArrayList<HashMap<St
         super.onPreExecute();
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
+        //TODO: fixed the problem about windowLeaked
         pDialog.show();
     }
 
@@ -70,7 +56,7 @@ public class ToiletListTask extends AsyncTask<String, Void, ArrayList<HashMap<St
             jsonStr = sh.makeServiceCall(strings[i]);
         }
 
-        Log.e(TAG, "Response from url: " + jsonStr);
+        Log.i(TAG, "Response from url: " + jsonStr);
         if (jsonStr != null) {
             try {
                 JSONObject jsonObj = new JSONObject(jsonStr);

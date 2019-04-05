@@ -17,4 +17,7 @@
     <string name="permission_rationale">Location permission is needed for core functionality</string>
     <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
     <string name="settings">Settings</string>
+    <string name="drawer_menu_item_home">Home</string>
+    <string name="drawer_menu_item_setting">Setting</string>
+    <string name="drawer_menu_item_info">Info</string>
 </resources>

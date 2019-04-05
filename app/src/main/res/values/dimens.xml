@@ -1,3 +1,7 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="list_item_name_default">16sp</dimen>
+    <dimen name="list_item_address_default">16sp</dimen>
+    <dimen name="list_item_distance_default">14sp</dimen>
+    <dimen name="list_item_all">18sp</dimen>
 </resources>

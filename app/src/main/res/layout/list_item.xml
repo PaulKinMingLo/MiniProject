@@ -9,18 +9,23 @@
         android:id="@+id/name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Name" />
+        android:text="Name"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="@dimen/list_item_name_default"
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Address" />
+        android:text="Address"
+        android:textSize="@dimen/list_item_address_default" />
 
     <TextView
         android:id="@+id/distance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/distance_label" />
+        android:text="@string/distance_label"
+        android:textSize="@dimen/list_item_distance_default" />
 
 </LinearLayout>
