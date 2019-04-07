@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -14,12 +15,11 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,7 +33,8 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener{
+
     public static final String EXTRA_MESSAGE = "com.example.assignment.MESSAGE";
 
     private String TAG = MainActivity.class.getSimpleName();
@@ -43,6 +44,10 @@ public class MainActivity extends AppCompatActivity
     private String myLat = "";
     private String myLng = "";
     private String tempUrl = "";
+
+    private TextView toiletName;
+    private TextView toiletAddr;
+    private TextView toiletDis;
 
     ArrayList<HashMap<String, String>> toiletList;
 
@@ -59,6 +64,15 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //TODO change font size
+        //toiletName = (TextView) findViewById(R.id.name);
+        //toiletAddr = findViewById(R.id.address);
+        //toiletDis = findViewById(R.id.distance);
+
+        //toiletName.setTextSize(20);
+        //toiletAddr.setTextSize(getResources().getDimensionPixelSize(R.dimen.list_item_address_default));
+        //toiletDis.setTextSize(getResources().getDimensionPixelSize(R.dimen.list_item_distance_default));
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -85,13 +99,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-
-        if(!checkPermissions()) {
+        if (!checkPermissions()) {
             requestPermissions();
-        }
-        else {
-            //getLastLocation();
-            getNearByToilet();
+        } else {
+            getResult();
         }
     }
 
@@ -106,7 +117,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @SuppressWarnings("MissingPermission")
-    private void getNearByToilet() {
+    private void getResult() {
         mFusedLocationClient.getLastLocation()
                 .addOnCompleteListener(this, new OnCompleteListener<Location>() {
                     @Override
@@ -147,9 +158,9 @@ public class MainActivity extends AppCompatActivity
                             getToiletList.setDistanceLabel(getResources().getString(R.string.distance_label));
                             getToiletList.setDistanceUnitLabel(getResources().getString(R.string.distanceUnit_label));
                             getToiletList.execute(url);
-                        }
-                        else {
-                            Log.w(TAG, "getNearByToilet:exception", task.getException());
+
+                        } else {
+                            Log.w(TAG, "getLastLocation:exception", task.getException());
                             showSnackbar(getString(R.string.no_location_detected));
                         }
                     }
@@ -187,7 +198,6 @@ public class MainActivity extends AppCompatActivity
         boolean shouldProvideRationale =
                 ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.ACCESS_COARSE_LOCATION);
-
         if (shouldProvideRationale) {
             Log.i(TAG, "Displaying permission rationale to provide additional context.");
 
@@ -198,37 +208,35 @@ public class MainActivity extends AppCompatActivity
                             startLocationPermissionRequest();
                         }
                     });
-        }
-        else {
+        } else {
             Log.i(TAG, "Requesting permission");
             startLocationPermissionRequest();
         }
     }
 
     @Override
-    public void  onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                            @NonNull int[] grantResults) {
-        Log.i(TAG, "onRequestPermissionsResult");
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        Log.i(TAG, "onRequestPermissionResult");
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
             if (grantResults.length <= 0) {
                 Log.i(TAG, "User interaction was cancelled.");
-            }
-            else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getNearByToilet();
-            }
-            else {
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //getLastLocation();
+                getResult();
+            } else {
                 showSnackbar(R.string.permission_denied_explanation, R.string.settings,
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Intent intent = new Intent();
-                                intent.setAction(
+                                Intent intent4 = new Intent();
+                                intent4.setAction(
                                         Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                 Uri uri = Uri.fromParts("package",
                                         BuildConfig.APPLICATION_ID, null);
-                                intent.setData(uri);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
+                                intent4.setData(uri);
+                                intent4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent4);
                             }
                         });
             }
@@ -249,15 +257,15 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_retry) {
-            Intent intent1 = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, MainActivity.class);
             //String message = myLat;
             //intent.putExtra(EXTRA_MESSAGE, message);
 
             overridePendingTransition(0, 0);
-            intent1.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
             finish();
             overridePendingTransition(0, 0);
-            startActivity(intent1);
+            startActivity(intent);
 
             return true;
         }
@@ -299,4 +307,5 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
 }
