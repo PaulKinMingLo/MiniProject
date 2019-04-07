@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">人有三急</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">人有三急</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">設定</string>
+    <string name="linkToServer">http://plbpc013.ouhk.edu.hk/toilet/json-toilet.php?</string>
+    <string name="latitude_label">Latitude</string>
+    <string name="longitude_label">Longitude</string>
+    <string name="distance_label">距離</string>
+    <string name="distanceUnit_label">米</string>
+    <string name="no_location_detected">
+        No location detected. Make sure location is enabled on the device.
+    </string>
+    <string name="permission_rationale">Location permission is needed for core functionality</string>
+    <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
+    <string name="settings">設定</string>
+    <string name="drawer_menu_item_home">主頁</string>
+    <string name="drawer_menu_item_setting">設定</string>
+    <string name="drawer_menu_item_info">資訊</string>
+    <string name="info_text_debug">InfoText</string>
+</resources>
