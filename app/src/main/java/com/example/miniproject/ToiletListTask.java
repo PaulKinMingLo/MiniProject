@@ -107,6 +107,7 @@ public class ToiletListTask extends AsyncTask<String, Void, ArrayList<HashMap<St
                 context, list,
                 R.layout.list_item, new String[]{"name", "address", "distance"},
                 new int[]{R.id.name, R.id.address, R.id.distance});
+
         lv.setAdapter(adapter);
     }
 

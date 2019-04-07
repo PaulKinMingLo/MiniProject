@@ -20,4 +20,5 @@
     <string name="drawer_menu_item_home">Home</string>
     <string name="drawer_menu_item_setting">Setting</string>
     <string name="drawer_menu_item_info">Info</string>
+    <string name="info_text_debug">InfoText</string>
 </resources>

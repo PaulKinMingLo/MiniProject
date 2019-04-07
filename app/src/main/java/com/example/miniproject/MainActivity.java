@@ -137,9 +137,15 @@ public class MainActivity extends AppCompatActivity
 
                             Log.i(TAG, "The default language is " + currentCountry + " " + currentLanguage);
 
-                            if (currentLanguage == "ch") {
+                            if (currentLanguage == "zh") {
                                 tempUrl = tempUrl.concat("&lang=");
                                 //TODO localization the app
+                                if (currentCountry == "HK") {
+                                    tempUrl = tempUrl.concat("zh");
+                                }
+                                if (currentCountry == "CN") {
+                                    tempUrl = tempUrl.concat("zh_cn");
+                                }
                             }
 
                             url = url.concat(tempUrl);
@@ -223,14 +229,14 @@ public class MainActivity extends AppCompatActivity
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                Intent intent = new Intent();
-                                intent.setAction(
+                                Intent intent4 = new Intent();
+                                intent4.setAction(
                                         Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                                 Uri uri = Uri.fromParts("package",
                                         BuildConfig.APPLICATION_ID, null);
-                                intent.setData(uri);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
+                                intent4.setData(uri);
+                                intent4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent4);
                             }
                         });
             }
@@ -291,6 +297,9 @@ public class MainActivity extends AppCompatActivity
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 break;
             case R.id.nav_info:
+                Intent intent3 = new Intent(getApplicationContext(), InfoActivity.class);
+                startActivity(intent3);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 break;
         }
 

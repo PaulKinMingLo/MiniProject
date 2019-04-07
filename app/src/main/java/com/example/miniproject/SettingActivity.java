@@ -3,11 +3,13 @@ package com.example.miniproject;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import java.util.Locale;
 
 public class SettingActivity extends AppCompatActivity {
+    private String TAG = SettingActivity.class.getSimpleName();
     private TextView latitudeText;
     private TextView longitudeText;
     private String latitudeLabel;
@@ -26,13 +28,25 @@ public class SettingActivity extends AppCompatActivity {
         String messageLat = intent.getStringExtra("latitude");
         String messageLng = intent.getStringExtra("longitude");
 
-        latitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
-                latitudeLabel, Double.valueOf(messageLat)));
+        try {
+            latitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
+                    latitudeLabel, Double.valueOf(messageLat)));
+        } catch (final NumberFormatException e) {
+            Log.e(TAG, "Can not get latitude...");
+            latitudeText.setText(String.format(Locale.ENGLISH, "%s: %s",
+                    latitudeLabel, "null"));
+        }
 
-        longitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
-                longitudeLabel, Double.valueOf(messageLng)));
+        try {
+            longitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
+                    longitudeLabel, Double.valueOf(messageLng)));
+        } catch (final NumberFormatException e) {
+            Log.e(TAG, "Can not get longitude...");
+            longitudeText.setText(String.format(Locale.ENGLISH, "%s: %s",
+                    longitudeLabel, "null"));
+        }
 
-        latitudeText.setTextSize(getResources().getDimensionPixelSize(R.dimen.list_item_all));
-        longitudeText.setTextSize(getResources().getDimensionPixelSize(R.dimen.list_item_all));
+        latitudeText.setTextSize(getResources().getDimensionPixelSize(R.dimen.setting_text));
+        longitudeText.setTextSize(getResources().getDimensionPixelSize(R.dimen.setting_text));
     }
 }
