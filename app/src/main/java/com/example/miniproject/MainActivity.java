@@ -22,8 +22,10 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -47,10 +49,6 @@ public class MainActivity extends AppCompatActivity
     private String myLng = "";
     private String tempUrl = "";
 
-    private TextView toiletName;
-    private TextView toiletAddr;
-    private TextView toiletDis;
-
     ArrayList<HashMap<String, String>> toiletList;
 
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
@@ -68,15 +66,6 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        //TODO change font size
-        //toiletName = (TextView) findViewById(R.id.name);
-        //toiletAddr = findViewById(R.id.address);
-        //toiletDis = findViewById(R.id.distance);
-
-        //toiletName.setTextSize(20);
-        //toiletAddr.setTextSize(getResources().getDimensionPixelSize(R.dimen.list_item_address_default));
-        //toiletDis.setTextSize(getResources().getDimensionPixelSize(R.dimen.list_item_distance_default));
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         numOfRowPref = sharedPref.getString(SettingActivity.KEY_PREF_NUMOFROW, "pref_setting_numOfRow_default");
@@ -171,6 +160,22 @@ public class MainActivity extends AppCompatActivity
                             getToiletList.setDistanceLabel(getResources().getString(R.string.distance_label));
                             getToiletList.setDistanceUnitLabel(getResources().getString(R.string.distanceUnit_label));
                             getToiletList.execute(url);
+
+                            lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                                @Override
+                                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                    ListView listView = (ListView) adapterView;
+                                    Toast.makeText(MainActivity.this,
+                                            listView.getItemAtPosition(i).toString(),
+                                            Toast.LENGTH_SHORT).show();
+
+                                    //TODO adding map activity
+                                    //Intent intent_Map = new Intent();
+
+                                    //String data = listView.getItemAtPosition(i).toString();
+                                    //intent_Map.putExtra("MyLat", )
+                                }
+                            });
 
                         } else {
                             Log.w(TAG, "getLastLocation:exception", task.getException());

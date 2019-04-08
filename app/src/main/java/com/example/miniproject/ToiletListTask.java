@@ -42,7 +42,7 @@ public class ToiletListTask extends AsyncTask<String, Void, ArrayList<HashMap<St
         super.onPreExecute();
         pDialog.setMessage("Please wait...");
         pDialog.setCancelable(false);
-        //TODO: fixed the problem about windowLeaked
+
         pDialog.show();
     }
 
@@ -82,6 +82,8 @@ public class ToiletListTask extends AsyncTask<String, Void, ArrayList<HashMap<St
                     toilet.put("name", name);
                     toilet.put("address", address);
                     toilet.put("distance", distance);
+                    toilet.put("latitude", latitude);
+                    toilet.put("longitude", longitude);
 
                     toiletList.add(toilet);
                 }

@@ -23,4 +23,5 @@
     <string name="info_text_debug">InfoText</string>
     <string name="setting_numOfRow">Number of row show in the list</string>
     <string name="pref_setting_numOfRow_default">20</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

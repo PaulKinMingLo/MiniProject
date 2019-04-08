@@ -30,7 +30,6 @@ public class SettingActivity extends AppCompatActivity implements SharedPreferen
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (key.equals(KEY_PREF_NUMOFROW)) {
 
-
         }
     }
 }
