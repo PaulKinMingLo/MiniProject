@@ -2,10 +2,12 @@ package com.example.miniproject;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -60,6 +62,8 @@ public class MainActivity extends AppCompatActivity
     private String currentLanguage;
     private String currentCountry;
 
+    private String numOfRowPref = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,10 +78,16 @@ public class MainActivity extends AppCompatActivity
         //toiletAddr.setTextSize(getResources().getDimensionPixelSize(R.dimen.list_item_address_default));
         //toiletDis.setTextSize(getResources().getDimensionPixelSize(R.dimen.list_item_distance_default));
 
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        numOfRowPref = sharedPref.getString(SettingActivity.KEY_PREF_NUMOFROW, "pref_setting_numOfRow_default");
+        Log.i(TAG, "default number of row : " + numOfRowPref);
+
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         currentLanguage = Locale.getDefault().getLanguage();
         currentCountry = Locale.getDefault().getCountry();
+
+        PreferenceManager.setDefaultValues(this, R.xml.setting_preference, false);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
@@ -147,6 +157,9 @@ public class MainActivity extends AppCompatActivity
                                     tempUrl = tempUrl.concat("zh_cn");
                                 }
                             }
+
+                            tempUrl = tempUrl.concat("&row_index=0&display_row=");
+                            tempUrl = tempUrl.concat(numOfRowPref);
 
                             url = url.concat(tempUrl);
 
@@ -287,17 +300,17 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_setting:
                 Intent intent2 = new Intent(getApplicationContext(), SettingActivity.class);
-                if (myLat != null) {
-                    intent2.putExtra(extraMessageKey1, myLat);
-                }
-                if (myLng != null) {
-                    intent2.putExtra(extraMessageKey2, myLng);
-                }
                 startActivity(intent2);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 break;
             case R.id.nav_info:
                 Intent intent3 = new Intent(getApplicationContext(), InfoActivity.class);
+                if (myLat != null) {
+                    intent3.putExtra(extraMessageKey1, myLat);
+                }
+                if (myLng != null) {
+                    intent3.putExtra(extraMessageKey2, myLng);
+                }
                 startActivity(intent3);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 break;

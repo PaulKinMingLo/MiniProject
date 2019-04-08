@@ -21,4 +21,6 @@
     <string name="drawer_menu_item_setting">设定</string>
     <string name="drawer_menu_item_info">资讯</string>
     <string name="info_text_debug">InfoText</string>
+    <string name="setting_numOfRow">显示的项目数量</string>
+    <string name="pref_setting_numOfRow_default">20</string>
 </resources>

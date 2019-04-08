@@ -1,52 +1,36 @@
 package com.example.miniproject;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.Preference;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 
-public class SettingActivity extends AppCompatActivity {
-    private String TAG = SettingActivity.class.getSimpleName();
-    private TextView latitudeText;
-    private TextView longitudeText;
-    private String latitudeLabel;
-    private String longitudeLabel;
+public class SettingActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+
+    public static final String KEY_PREF_NUMOFROW = "pref_numOfRow";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
 
-        latitudeText = findViewById(R.id.setting_lat_msg);
-        longitudeText = findViewById(R.id.setting_lng_msg);
-        latitudeLabel = getResources().getString(R.string.latitude_label);
-        longitudeLabel = getResources().getString(R.string.longitude_label);
+        getFragmentManager().beginTransaction()
+                .replace(android.R.id.content, new SettingsFragment()).commit();
+    }
 
-        Intent intent = getIntent();
-        String messageLat = intent.getStringExtra("latitude");
-        String messageLng = intent.getStringExtra("longitude");
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (key.equals(KEY_PREF_NUMOFROW)) {
 
-        try {
-            latitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
-                    latitudeLabel, Double.valueOf(messageLat)));
-        } catch (final NumberFormatException e) {
-            Log.e(TAG, "Can not get latitude...");
-            latitudeText.setText(String.format(Locale.ENGLISH, "%s: %s",
-                    latitudeLabel, "null"));
+
         }
-
-        try {
-            longitudeText.setText(String.format(Locale.ENGLISH, "%s: %f",
-                    longitudeLabel, Double.valueOf(messageLng)));
-        } catch (final NumberFormatException e) {
-            Log.e(TAG, "Can not get longitude...");
-            longitudeText.setText(String.format(Locale.ENGLISH, "%s: %s",
-                    longitudeLabel, "null"));
-        }
-
-        latitudeText.setTextSize(getResources().getDimensionPixelSize(R.dimen.setting_text));
-        longitudeText.setTextSize(getResources().getDimensionPixelSize(R.dimen.setting_text));
     }
 }
