@@ -28,11 +28,6 @@ public class ToiletListTask extends AsyncTask<String, Void, ArrayList<HashMap<St
 
     ArrayList<HashMap<String, String>> toiletList = new ArrayList<>();
 
-    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-
-    private String tempLat;
-    private String tempLng;
-
     public ToiletListTask(Context cxt, ListView listView) {
         context = cxt;
         pDialog = new ProgressDialog(context);
@@ -88,9 +83,6 @@ public class ToiletListTask extends AsyncTask<String, Void, ArrayList<HashMap<St
                     toilet.put("latitude", latitude);
                     toilet.put("longitude", longitude);
 
-                    tempLat = latitude;
-                    tempLng = longitude;
-
                     toiletList.add(toilet);
                 }
             } catch (final JSONException e) {
@@ -125,14 +117,6 @@ public class ToiletListTask extends AsyncTask<String, Void, ArrayList<HashMap<St
 
     public void setDistanceUnitLabel(String label) {
         distanceUnitLabel = label;
-    }
-
-    public String getValueLat() {
-        return tempLat;
-    }
-
-    public String getValueLng() {
-        return tempLng;
     }
 
 }

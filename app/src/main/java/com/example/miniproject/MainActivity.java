@@ -24,16 +24,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,8 +38,6 @@ import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
-
-    public static final String EXTRA_MESSAGE = "com.example.assignment.MESSAGE";
 
     private String TAG = MainActivity.class.getSimpleName();
     private ListView lv;
@@ -72,20 +65,24 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Set the default value of the number of the result show in the list.
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
         numOfRowPref = sharedPref.getString(SettingActivity.KEY_PREF_NUMOFROW, "pref_setting_numOfRow_default");
         Log.i(TAG, "default number of row : " + numOfRowPref);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
+        // Get the current device's language and region.
         currentLanguage = Locale.getDefault().getLanguage();
         currentCountry = Locale.getDefault().getCountry();
 
         PreferenceManager.setDefaultValues(this, R.xml.setting_preference, false);
 
+        // Initializing the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
 
+        // Initializing the navigation drawer widget
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -122,6 +119,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @SuppressWarnings("MissingPermission")
+    // Get user's location and request the server to get the information about nearest public toilets
     private void getResult() {
         mFusedLocationClient.getLastLocation()
                 .addOnCompleteListener(this, new OnCompleteListener<Location>() {
@@ -138,6 +136,7 @@ public class MainActivity extends AppCompatActivity
                             tempUrl = tempUrl.concat("&lng=");
                             tempUrl = tempUrl.concat(myLng);
 
+                            // The url needed to request the server
                             url = url.concat(getResources().getString(R.string.linkToServer));
 
                             Log.i(TAG, "The default language is " + currentCountry + " " + currentLanguage);
@@ -166,7 +165,7 @@ public class MainActivity extends AppCompatActivity
                             getToiletList.setDistanceUnitLabel(getResources().getString(R.string.distanceUnit_label));
                             getToiletList.execute(url);
 
-
+                            // Start google map app when user click the item of the list vie, where the map activity show the specific location.
                             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -176,7 +175,7 @@ public class MainActivity extends AppCompatActivity
                                     String tempUrlLat = "";
                                     String tempUrlLng = "";
                                     String paraOfURI = "";
-                                    String nameForURI = "";
+                                    String toiletName = "";
 
                                     Log.i(TAG, data);
 
@@ -186,12 +185,12 @@ public class MainActivity extends AppCompatActivity
                                         String tempToken = token;
 
                                         try {
-                                            String[] temp = tempToken.split(", ");
-                                            String[] sepTemp = temp[0].split("=");
+                                            String[] separatedString = tempToken.split(", ");
+                                            String[] sepTemp = separatedString[0].split("=");
 
                                             if (sepTemp[0].equals(" name")) {
                                                 sepTemp[1] = sepTemp[1].trim();
-                                                nameForURI = sepTemp[1];
+                                                toiletName = sepTemp[1];
                                             }
                                             if (sepTemp[0].equals("{latitude")) {
                                                 sepTemp[1] = sepTemp[1].trim();
@@ -207,6 +206,7 @@ public class MainActivity extends AppCompatActivity
                                         }
                                     }
 
+                                    // Generate the parameters used to display a map
                                     paraOfURI = paraOfURI.concat("geo:");
                                     paraOfURI = paraOfURI.concat(tempUrlLat);
                                     paraOfURI = paraOfURI.concat(",");
@@ -215,13 +215,11 @@ public class MainActivity extends AppCompatActivity
                                     paraOfURI = paraOfURI.concat(tempUrlLat);
                                     paraOfURI = paraOfURI.concat(",");
                                     paraOfURI = paraOfURI.concat(tempUrlLng);
-                                    paraOfURI = paraOfURI.concat("(" + nameForURI + ")");
-
 
                                     Log.i(TAG, "Uri para: " + paraOfURI);
 
                                     //TODO adding map activity
-                                    Uri gmmIntentUri = Uri.parse(paraOfURI);
+                                    Uri gmmIntentUri = Uri.parse(paraOfURI + Uri.encode("(" + toiletName + ")"));
                                     Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                                     mapIntent.setPackage("com.google.android.apps.maps");
                                     if (mapIntent.resolveActivity(getPackageManager()) != null) {
@@ -328,9 +326,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.action_retry) {
+            // Restart the main activity
             Intent intent = new Intent(this, MainActivity.class);
-            //String message = myLat;
-            //intent.putExtra(EXTRA_MESSAGE, message);
 
             overridePendingTransition(0, 0);
             intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -350,9 +347,6 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        String extraMessageKey1 = "latitude";
-        String extraMessageKey2 = "longitude";
-
         switch (id) {
             case R.id.nav_home:
                 break;
@@ -363,12 +357,6 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_info:
                 Intent intent3 = new Intent(getApplicationContext(), InfoActivity.class);
-                if (myLat != null) {
-                    intent3.putExtra(extraMessageKey1, myLat);
-                }
-                if (myLng != null) {
-                    intent3.putExtra(extraMessageKey2, myLng);
-                }
                 startActivity(intent3);
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 break;
