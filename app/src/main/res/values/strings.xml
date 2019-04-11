@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">The call of nature</string>
+    <string name="app_name">Nature calls</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_title">Nature calls</string>
     <string name="nav_header_subtitle">Please wash your hands after going to the toilet</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="linkToServer">http://plbpc013.ouhk.edu.hk/toilet/json-toilet.php?</string>
@@ -19,5 +19,6 @@
     <string name="drawer_menu_item_info">Info</string>
     <string name="info_text_debug">InfoText</string>
     <string name="setting_numOfRow">Number of row show in the list</string>
+    <string name="infoText">Developed By Lo Kin Ming</string>
     <string name="pref_setting_numOfRow_default">20</string>
 </resources>

@@ -19,7 +19,6 @@ public class InfoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_info);
 
         textView = findViewById(R.id.info_text);
-        textView.setTextSize(getResources().getDimensionPixelSize(R.dimen.info_text));
-        textView.setText(String.format(Locale.ENGLISH, "%d.%s", versionCode, versionName));
+        textView.setText(String.format(Locale.ENGLISH, "%s %d.%s", "Version", versionCode, versionName));
     }
 }

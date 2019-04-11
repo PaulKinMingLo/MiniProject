@@ -5,5 +5,5 @@
     <dimen name="list_item_distance_default">12sp</dimen>
     <dimen name="list_item_all">18sp</dimen>
     <dimen name="setting_text">10sp</dimen>
-    <dimen name="info_text">12sp</dimen>
+    <dimen name="info_text">14sp</dimen>
 </resources>
