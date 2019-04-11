@@ -32,9 +32,14 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.NoSuchElementException;
+import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
@@ -101,6 +106,7 @@ public class MainActivity extends AppCompatActivity
         if (!checkPermissions()) {
             requestPermissions();
         } else {
+            url = "";
             getResult();
         }
     }
@@ -138,7 +144,6 @@ public class MainActivity extends AppCompatActivity
 
                             if (currentLanguage == "zh") {
                                 tempUrl = tempUrl.concat("&lang=");
-                                //TODO localization the app
                                 if (currentCountry == "HK") {
                                     tempUrl = tempUrl.concat("zh");
                                 }
@@ -156,24 +161,72 @@ public class MainActivity extends AppCompatActivity
                             toiletList = new ArrayList<>();
                             lv = (ListView) findViewById(R.id.list);
 
-                            ToiletListTask getToiletList = new ToiletListTask(MainActivity.this, lv);
+                            final ToiletListTask getToiletList = new ToiletListTask(MainActivity.this, lv);
                             getToiletList.setDistanceLabel(getResources().getString(R.string.distance_label));
                             getToiletList.setDistanceUnitLabel(getResources().getString(R.string.distanceUnit_label));
                             getToiletList.execute(url);
+
 
                             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                                 @Override
                                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                                     ListView listView = (ListView) adapterView;
-                                    Toast.makeText(MainActivity.this,
-                                            listView.getItemAtPosition(i).toString(),
-                                            Toast.LENGTH_SHORT).show();
+
+                                    String data = listView.getItemAtPosition(i).toString();
+                                    String tempUrlLat = "";
+                                    String tempUrlLng = "";
+                                    String paraOfURI = "";
+                                    String nameForURI = "";
+
+                                    Log.i(TAG, data);
+
+                                    StringTokenizer st = new StringTokenizer(data, ",", true);
+                                    while(st.hasMoreElements()) {
+                                        String token = st.nextToken();
+                                        String tempToken = token;
+
+                                        try {
+                                            String[] temp = tempToken.split(", ");
+                                            String[] sepTemp = temp[0].split("=");
+
+                                            if (sepTemp[0].equals(" name")) {
+                                                sepTemp[1] = sepTemp[1].trim();
+                                                nameForURI = sepTemp[1];
+                                            }
+                                            if (sepTemp[0].equals("{latitude")) {
+                                                sepTemp[1] = sepTemp[1].trim();
+                                                tempUrlLat = sepTemp[1];
+                                            }
+                                            if (sepTemp[0].equals(" longitude")) {
+                                                sepTemp[1] = sepTemp[1].replace('}', ' ');
+                                                sepTemp[1] = sepTemp[1].trim();
+                                                tempUrlLng = sepTemp[1];
+                                            }
+                                        } catch (NoSuchElementException e) {
+                                            Log.e(TAG, "NoSuchElementException");
+                                        }
+                                    }
+
+                                    paraOfURI = paraOfURI.concat("geo:");
+                                    paraOfURI = paraOfURI.concat(tempUrlLat);
+                                    paraOfURI = paraOfURI.concat(",");
+                                    paraOfURI = paraOfURI.concat(tempUrlLng);
+                                    paraOfURI = paraOfURI.concat("?q=");
+                                    paraOfURI = paraOfURI.concat(tempUrlLat);
+                                    paraOfURI = paraOfURI.concat(",");
+                                    paraOfURI = paraOfURI.concat(tempUrlLng);
+                                    paraOfURI = paraOfURI.concat("(" + nameForURI + ")");
+
+
+                                    Log.i(TAG, "Uri para: " + paraOfURI);
 
                                     //TODO adding map activity
-                                    //Intent intent_Map = new Intent();
-
-                                    //String data = listView.getItemAtPosition(i).toString();
-                                    //intent_Map.putExtra("MyLat", )
+                                    Uri gmmIntentUri = Uri.parse(paraOfURI);
+                                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                                    mapIntent.setPackage("com.google.android.apps.maps");
+                                    if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                                        startActivity(mapIntent);
+                                    }
                                 }
                             });
 
